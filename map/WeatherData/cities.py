@@ -28,13 +28,19 @@ def code_of_city(city):
 
 def aqi_pm25_of_city(code):
     url = 'http://d1.weather.com.cn/sk_2d/{}.html'.format(code)
-    headers = {'Referer': 'http://www.weather.com.cn/weather1d/101010100.shtml'}
+    
+    headers = {
+        'Referer': 'http://www.weather.com.cn/weather1d/101010100.shtml',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'
+        }
 
     response = requests.get(url, headers=headers)
 
     try:
         aqi_pm25 = helpers.extract_aqi(response.text)
     except errors.AQINotAvailable:
+        raise
+    except errors.NoWeatherForCode:
         raise
     except:
         message = 'Error fetching AQI_pm25, inspect traceback for more detail.'
