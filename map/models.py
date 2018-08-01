@@ -1,11 +1,16 @@
 from django.db import models
+from datetime import date
+from django.utils.timezone import now
 
 # Create your models here.
 
 class AQI(models.Model):
-    value = models.IntegerField(default=0)
-    city = models.CharField(max_length=15)
-    date = models.DateField(auto_now=True)
+    city_id = models.IntegerField(default=0)
+    value = models.IntegerField(null=True)
+    query_id = models.IntegerField(default=0)
 
-    def __str__(self):
-        return 
+class City(models.Model):
+    name = models.CharField(max_length=15)
+
+class Query(models.Model):
+    date = models.DateField(default=now)
