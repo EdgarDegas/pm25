@@ -2,7 +2,7 @@
 
 ## 概述
 
-「pm25」是[集智从零开始直播课程](https://detail.youzan.com/show/goods?alias=1ya9wqql1ow4c&reft=1525853208799_1533302309160&spm=g416814188_g411042363_f70093789)Python 课程最终项目的 Demo。
+「pm25」是[集智从零开始直播课程](https://detail.youzan.com/show/goods?alias=1ya9wqql1ow4c&reft=1525853208799_1533302309160&spm=g416814188_g411042363_f70093789) Python 课程最终项目的 Demo。
 
 这个项目包含三个部分：
 
