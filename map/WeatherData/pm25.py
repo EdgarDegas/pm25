@@ -6,11 +6,12 @@ def aqi_pm25(city):
         city_code = cities.code_of_city(city)
         print('code of {}: {}'.format(city, city_code))
         aqi_pm25 = cities.aqi_pm25_of_city(city_code)
-    except errors.CityCodeNotFound:
+    # except errors.CityCodeNotFound:
+    #     return None
+    # except errors.NoWeatherForCode:
+    #     return None
+    # except errors.AQINotAvailable:
+    #     return None
+    except:
         return None
-    except errors.NoWeatherForCode:
-        return None
-    except errors.AQINotAvailable:
-        return None
-
     return aqi_pm25

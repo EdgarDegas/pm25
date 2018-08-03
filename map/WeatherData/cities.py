@@ -46,4 +46,8 @@ def aqi_pm25_of_city(code):
         message = 'Error fetching AQI_pm25, inspect traceback for more detail.'
         raise errors.WeatherDataError(message)
 
+    if len(aqi_pm25) == 0:
+        raise errors.AQINotAvailable()
+
+        
     return aqi_pm25
