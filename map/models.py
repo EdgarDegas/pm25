@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date
 from django.utils.timezone import now
 
+# AQI model and manager
 class AQIManager(models.Manager):
     def create_aqi(self, city_id, query_id, value):
         new_record = self.create(city_id=city_id, query_id=query_id, value=value)
@@ -19,6 +20,7 @@ class AQI(models.Model):
     objects = AQIManager()
 
 
+# City model and manager
 class CityManager(models.Manager):
     def create_city(self, name):
         city = self.create(name=name)
@@ -32,6 +34,7 @@ class City(models.Model):
     objects = CityManager()
 
 
+# Query model and manager
 class QueryManager(models.Manager):
     def create_query(self, date):
         query = self.create(date=date)
