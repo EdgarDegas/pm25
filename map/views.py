@@ -12,13 +12,13 @@ def index(request):
 
     # compare today & recent query date
     # with a flag: query_outdated
-    today = date.today(); recent_query = Query.recent_query()
+    today = date.today(); recent_query = Query.objects.last()
 
     recent_query_up_to_date = recent_query.date == today
 
 
     if recent_query is None or not recent_query_up_to_date:
-        query_id, _ = Query.create_new_query(date.today)
+        query_id = Query.objects.create_query(date.today()).id
     else:  # recent_query_up_to_date
         query_id = recent_query.id
 
@@ -35,11 +35,11 @@ def index(request):
 
 
     if recent_query_up_to_date:
-        aqi_records = AQI.fetch_by_query_id(query_id)
+        aqi_records = AQI.objects.filter(query_id=query_id)
 
         for aqi_record in aqi_records:
             city_id = aqi_record.city_id
-            city_name = City.fetch_by_id(city_id).name
+            city_name = City.objects.get(city_id).name
             value = aqi_record.value
 
             append_to_city_value_lst(city_name, value)
@@ -51,9 +51,9 @@ def index(request):
         for city in city_lst:
             # get city_id, create one if not exists
             try:
-                city_id = City.fetch_by_name(city).id
+                city_id = City.objects.get(city).id
             except City.DoesNotExist:
-                city_id, _ = City.create_new_city(city)
+                city_id = City.objects.create_city(city).id
             except: continue
 
             # get aqi_pm25 value
@@ -61,7 +61,7 @@ def index(request):
             append_to_city_value_lst(city_name, value)
 
             # create new aqi record and save
-            _ = AQI.create_new_aqi(city_id, query_id, value)
+            _ = AQI.objects.create_aqi(city_id, query_id, value)
 
 
     context = {
