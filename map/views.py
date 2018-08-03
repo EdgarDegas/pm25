@@ -12,34 +12,29 @@ def index(request):
 
     # compare today & recent query date
     # with a flag: query_outdated
-    today = date.today()
-    recent_query = Query.recent_query()
+    today = date.today(); recent_query = Query.recent_query()
 
-    if recent_query is None:
-        query_outdated = True
+    recent_query_up_to_date = recent_query.date == today
+
+
+    if recent_query is None or not recent_query_up_to_date:
         query_id, _ = Query.create_new_query(date.today)
-
-    else:
-        recent_query_date = recent_query.date
-
-        if recent_query_date == today:
-            query_outdated = False
-            query_id = recent_query.id
-
-        elif recent_query_date < today:
-            query_outdated = True
-            query_id, _ = Query.create_new_query(date.today)
-
-        else:
-            raise Exception('Last query date > today. Might caused by timezone staff.')
-
+    else:  # recent_query_up_to_date
+        query_id = recent_query.id
 
     # need a list of dict anyway
     # do not add None value dicts into it
     city_value_lst = []
 
+    def append_to_city_value_lst(name, value):
+        if value is not None:
+            city_value_lst.append({
+                'name' : city_name,
+                'value': value
+            })
 
-    if query_outdated is not True:
+
+    if recent_query_up_to_date:
         aqi_records = AQI.fetch_by_query_id(query_id)
 
         for aqi_record in aqi_records:
@@ -47,11 +42,7 @@ def index(request):
             city_name = City.fetch_by_id(city_id).name
             value = aqi_record.value
 
-            if value is not None:
-                city_value_lst.append({
-                    'name' : city_name,
-                    'value': value
-                })
+            append_to_city_value_lst(city_name, value)
 
 
 
@@ -67,20 +58,10 @@ def index(request):
 
             # get aqi_pm25 value
             value = pm25.aqi_pm25(city)
-            if value is not None:
-                city_value_lst.append({
-                    'name' : city,
-                    'value': value
-                })
+            append_to_city_value_lst(city_name, value)
 
             # create new aqi record and save
-            new_record = AQI()
-            new_record.city_id = city_id
-            new_record.query_id = query_id
-            new_record.value = value
-            new_record.save()
-
-
+            _ = AQI.create_new_aqi(city_id, query_id, value)
 
 
     context = {

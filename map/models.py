@@ -9,25 +9,34 @@ class AQI(models.Model):
     value = models.IntegerField(null=True)
     query_id = models.IntegerField(default=0)
 
-    @staticmethod
-    def fetch_by_query_id(query_id):
-        return AQI.objects.filter(query_id=query_id)
+    @classmethod
+    def fetch_by_query_id(cls, query_id):
+        return cls.objects.filter(query_id=query_id)
+
+    @classmethod
+    def create_new_aqi(cls, city_id, query_id, value):
+        new_record = cls()
+        new_record.city_id = city_id
+        new_record.query_id = query_id
+        new_record.value = value
+        new_record.save()
+        return new_record.id, new_record
 
 
 class City(models.Model):
     name = models.CharField(max_length=15)
 
-    @staticmethod
-    def fetch_by_id(city_id):
-        return City.objects.get(id=city_id)
+    @classmethod
+    def fetch_by_id(cls, city_id):
+        return cls.objects.get(id=city_id)
 
-    @staticmethod
-    def fetch_by_name(city_name):
-        return City.objects.get(name=city_name)
+    @classmethod
+    def fetch_by_name(cls, city_name):
+        return cls.objects.get(name=city_name)
 
-    @staticmethod
-    def create_new_city(name):
-        new_city = City()
+    @classmethod
+    def create_new_city(cls, name):
+        new_city = cls()
         new_city.name = name
         new_city.save()
         return new_city.id, new_city
@@ -36,13 +45,13 @@ class City(models.Model):
 class Query(models.Model):
     date = models.DateField(default=now)
 
-    @staticmethod
-    def create_new_query(date):
-        new_query = Query()
+    @classmethod
+    def create_new_query(cls, date):
+        new_query = cls()
         new_query.date = date
         new_query.save()
         return new_query.id, new_query
 
-    @staticmethod
-    def recent_query():
-        return Query.objects.last()
+    @classmethod
+    def recent_query(cls):
+        return cls.objects.last()
