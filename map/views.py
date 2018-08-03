@@ -40,11 +40,11 @@ def index(request):
 
 
     if query_outdated is not True:
-        aqi_records = AQI.objects.filter(query_id=query_id)
+        aqi_records = AQI.fetch_by_query_id(query_id)
 
         for aqi_record in aqi_records:
             city_id = aqi_record.city_id
-            city_name = City.objects.get(id=city_id).name
+            city_name = City.fetch_by_id(city_id).name
             value = aqi_record.value
 
             if value is not None:
@@ -60,12 +60,9 @@ def index(request):
         for city in city_lst:
             # get city_id, create one if not exists
             try:
-                city_id = City.objects.get(name=city).id
+                city_id = City.fetch_by_name(city).id
             except City.DoesNotExist:
-                new_city = City()
-                new_city.name = city
-                new_city.save()
-                city_id = new_city.id
+                city_id, _ = City.create_new_city(city)
             except: continue
 
             # get aqi_pm25 value
