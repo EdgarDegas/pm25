@@ -14,3 +14,14 @@ class City(models.Model):
 
 class Query(models.Model):
     date = models.DateField(default=now)
+
+    @staticmethod
+    def create_new_query(date):
+        new_query = Query()
+        new_query.date = date
+        new_query.save()
+        return new_query.id, new_query
+
+    @staticmethod
+    def recent_query():
+        return Query.objects.last()

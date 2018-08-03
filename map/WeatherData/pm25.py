@@ -14,5 +14,4 @@ def aqi_pm25(city):
     #     return None
     except:
         return None
-
     return aqi_pm25

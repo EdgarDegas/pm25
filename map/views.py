@@ -13,18 +13,11 @@ def index(request):
     # compare today & recent query date
     # with a flag: query_outdated
     today = date.today()
-    recent_query = Query.objects.last()
-
-    def new_query_id():
-        new_query = Query()
-        new_query.date = date.today()
-        new_query.save()
-        query_id = new_query.id
-        return query_id
+    recent_query = Query.recent_query()
 
     if recent_query is None:
         query_outdated = True
-        query_id = new_query_id()
+        query_id, _ = Query.create_new_query(date.today)
 
     else:
         recent_query_date = recent_query.date
@@ -35,7 +28,7 @@ def index(request):
 
         elif recent_query_date < today:
             query_outdated = True
-            query_id = new_query_id()
+            query_id, _ = Query.create_new_query(date.today)
 
         else:
             raise Exception('Last query date > today. Might caused by timezone staff.')
